@@ -9,8 +9,13 @@ import (
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	_, _ = fmt.Fprintf(w, "Welcome to my awesome site!")
-	//handleError(err, "Failed to handle request")
+	_, _ = fmt.Fprintf(w, "<h1>Welcome to my awesome site!</h1>")
+}
+
+func faqs(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	_, _ = fmt.Fprintf(w, "<h1>FAQs Page</h1>")
 }
 
 func notFoundHandler(w http.ResponseWriter, r *http.Request) {
@@ -24,6 +29,7 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", home)
+	router.HandleFunc("/faqs", faqs)
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 
 	_ = http.ListenAndServe(":8080", router)
