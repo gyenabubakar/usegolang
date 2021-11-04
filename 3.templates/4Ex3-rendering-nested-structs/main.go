@@ -11,7 +11,8 @@ type Dog struct {
 }
 
 type Person struct {
-	Name string
+	Name    string
+	Friends []string
 	Dog
 }
 
@@ -23,6 +24,11 @@ func main() {
 
 	gyen := Person{
 		Name: "Gyen Abubakar",
+		Friends: []string{
+			"Sena",
+			"De Graft",
+			"Felix",
+		},
 		Dog: Dog{
 			Name: "Honesty",
 			Age:  12,
