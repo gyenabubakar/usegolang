@@ -1,4 +1,4 @@
-module adding-pages
+module first-views
 
 go 1.17
 
