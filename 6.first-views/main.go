@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	homeTemplate *template.Template
+	homeTemplate    *template.Template
 	contactTemplate *template.Template
 )
 
@@ -38,12 +38,18 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	var err error
 
-	homeTemplate, err = template.ParseFiles("views/index.gohtml")
+	homeTemplate, err = template.ParseFiles(
+		"views/index.gohtml",
+		"views/components/footer.gohtml",
+	)
 	if err != nil {
 		panic(err)
 	}
 
-	contactTemplate, err = template.ParseFiles("views/contact.gohtml")
+	contactTemplate, err = template.ParseFiles(
+		"views/contact.gohtml",
+		"views/components/footer.gohtml",
+	)
 	if err != nil {
 		panic(err)
 	}
