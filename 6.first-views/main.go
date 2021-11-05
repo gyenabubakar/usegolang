@@ -13,18 +13,14 @@ var (
 	contactView *views.View
 )
 
-func home(w http.ResponseWriter, r *http.Request) {
+func home(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	if err := homeView.Template.Execute(w, nil); err != nil {
-		panic(err)
-	}
+	homeView.RenderWith(&w, nil, nil)
 }
 
-func contact(w http.ResponseWriter, r *http.Request) {
+func contact(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	if err := contactView.Template.Execute(w, nil); err != nil {
-		panic(err)
-	}
+	contactView.RenderWith(&w, nil,nil)
 }
 
 func notFoundHandler(w http.ResponseWriter, r *http.Request) {
