@@ -8,7 +8,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var homeTemplate *template.Template
+var (
+	homeTemplate *template.Template
+	contactTemplate *template.Template
+)
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
@@ -17,10 +20,11 @@ func home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func faqs(w http.ResponseWriter, _ *http.Request) {
+func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	_, _ = fmt.Fprintf(w, "<h1>FAQs Page</h1>")
+	if err := contactTemplate.Execute(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 func notFoundHandler(w http.ResponseWriter, r *http.Request) {
@@ -33,14 +37,21 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var err error
+
 	homeTemplate, err = template.ParseFiles("views/index.gohtml")
+	if err != nil {
+		panic(err)
+	}
+
+	contactTemplate, err = template.ParseFiles("views/contact.gohtml")
 	if err != nil {
 		panic(err)
 	}
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", home)
-	router.HandleFunc("/faqs", faqs)
+	router.HandleFunc("/contact", contact)
+
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 
 	_ = http.ListenAndServe(":8080", router)
