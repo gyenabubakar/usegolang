@@ -15,13 +15,17 @@ func NewView(files ...string) *View {
 	return &View{Template: t}
 }
 
-func (v *View) RenderWith(w *http.ResponseWriter, d interface{}, fn func(error)) {
-	err := v.Template.Execute(*w, d)
-	if fn != nil && err != nil {
-		fn(err)
-		return
+func (v *View) RenderWith(w http.ResponseWriter, d interface{}, fn func(error)) {
+	err := v.Template.Execute(w, d)
+
+	if err != nil {
+		if fn != nil {
+			fn(err)
+			return
+		}
+
+		panic(err)
 	}
-	panic(err)
 }
 
 type View struct {

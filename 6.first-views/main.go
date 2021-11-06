@@ -15,12 +15,12 @@ var (
 
 func home(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	homeView.RenderWith(&w, nil, nil)
+	homeView.RenderWith(w, nil, nil)
 }
 
 func contact(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	contactView.RenderWith(&w, nil,nil)
+	contactView.RenderWith(w, nil, nil)
 }
 
 func notFoundHandler(w http.ResponseWriter, r *http.Request) {
@@ -41,5 +41,6 @@ func main() {
 
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 
+	fmt.Println("Server started!")
 	_ = http.ListenAndServe(":8080", router)
 }
