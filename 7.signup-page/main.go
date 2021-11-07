@@ -40,9 +40,10 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", home)
 	router.HandleFunc("/contact", contact)
-	router.HandleFunc("/signup", usersController.RenderCreationView).
+	router.HandleFunc("/signup", usersController.RenderSignupView).
 		Methods("GET")
-
+	router.HandleFunc("/signup", usersController.HandlerUserCreation).
+		Methods("POST")
 
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 
