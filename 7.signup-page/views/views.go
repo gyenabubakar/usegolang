@@ -25,6 +25,7 @@ func NewView(layout string, files ...string) *View {
 }
 
 func (v *View) Render(w http.ResponseWriter, d interface{}, fn func(error)) {
+	w.Header().Set("Content-Type", "text/html")
 	if err := v.Template.ExecuteTemplate(w, v.Layout, d); err != nil {
 		if fn != nil {
 			fn(err)

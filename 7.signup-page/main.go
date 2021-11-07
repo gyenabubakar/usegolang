@@ -20,12 +20,10 @@ func home(w http.ResponseWriter, _ *http.Request) {
 }
 
 func contact(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
 	contactView.Render(w, nil, nil)
 }
 
 func signup(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
 	signupView.Render(w, nil, nil)
 }
 
