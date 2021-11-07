@@ -3,15 +3,24 @@ package views
 import (
 	"html/template"
 	"net/http"
+	"path/filepath"
 )
 
+const (
+	ComponentsDir = "views/components/"
+	ComponentsExt = ".gohtml"
+)
+
+func getComponents() []string {
+	files, err := filepath.Glob(ComponentsDir + "*" + ComponentsExt)
+	if err != nil {
+		panic(err)
+	}
+	return files
+}
+
 func NewView(layout string, files ...string) *View {
-	files = append(
-		files,
-		"views/components/layout.gohtml",
-		"views/components/navbar.gohtml",
-		"views/components/footer.gohtml",
-	)
+	files = append(files, getComponents()...)
 	t, err := template.ParseFiles(files...)
 	if err != nil {
 		panic(err)
