@@ -9,6 +9,7 @@ func NewView(layout string, files ...string) *View {
 	files = append(
 		files,
 		"views/components/layout.gohtml",
+		"views/components/navbar.gohtml",
 		"views/components/footer.gohtml",
 	)
 	t, err := template.ParseFiles(files...)
