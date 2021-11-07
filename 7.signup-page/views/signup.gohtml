@@ -1,0 +1,56 @@
+{{define "head"}}
+    <title>Sign up - LensLocked</title>
+{{end}}
+
+{{define "main"}}
+    <div class="container my-5">
+        <div class="row justify-content-md-center">
+            <div class="col col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Sign up for an account
+                    </div>
+
+                    {{template "form"}}
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "form"}}
+    <form class="p-3">
+        <div class="mb-3">
+            <label for="email" class="form-label">
+                Email address
+            </label>
+            <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    aria-describedby="emailHelp"
+                    required
+            />
+            <div id="emailHelp" class="form-text">
+                We'll never share your email with anyone else.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">
+                Password
+            </label>
+            <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    required
+            />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Sign up
+        </button>
+    </form>
+{{end}}
