@@ -1,6 +1,7 @@
 package main
 
 import (
+	"first-views/controllers"
 	"first-views/views"
 	"fmt"
 	"net/http"
@@ -11,7 +12,6 @@ import (
 var (
 	homeView    *views.View
 	contactView *views.View
-	signupView *views.View
 )
 
 func home(w http.ResponseWriter, _ *http.Request) {
@@ -21,10 +21,6 @@ func home(w http.ResponseWriter, _ *http.Request) {
 
 func contact(w http.ResponseWriter, _ *http.Request) {
 	contactView.Render(w, nil, nil)
-}
-
-func signup(w http.ResponseWriter, _ *http.Request) {
-	signupView.Render(w, nil, nil)
 }
 
 func notFoundHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,12 +34,15 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	homeView = views.NewView("bootstrap", "views/index.gohtml")
 	contactView = views.NewView("bootstrap", "views/contact.gohtml")
-	signupView = views.NewView("bootstrap", "views/signup.gohtml")
+
+	usersController := controllers.UsersController()
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", home)
 	router.HandleFunc("/contact", contact)
-	router.HandleFunc("/signup", signup)
+	router.HandleFunc("/signup", usersController.RenderCreationView).
+		Methods("GET")
+
 
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 
