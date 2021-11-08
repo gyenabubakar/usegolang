@@ -41,10 +41,15 @@ func main() {
 	router := mux.NewRouter()
 
 	// serve static files
-	router.PathPrefix("/static/").Handler(staticFilesHandler())
+	router.PathPrefix("/static/").
+		Handler(staticFilesHandler()).
+		Methods("GET")
 
 	router.HandleFunc("/", home)
-	router.HandleFunc("/contact", contact)
+	router.HandleFunc("/contact", contact).
+		Methods("GET")
+
+	// /signup controllers
 	router.HandleFunc("/signup", usersController.RenderSignupView).
 		Methods("GET")
 	router.HandleFunc("/signup", usersController.HandlerUserCreation).
