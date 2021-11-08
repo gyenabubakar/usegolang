@@ -39,6 +39,10 @@ func main() {
 	usersController := controllers.UsersController()
 
 	router := mux.NewRouter()
+
+	// serve static files
+	router.PathPrefix("/static/").Handler(staticFilesHandler())
+
 	router.HandleFunc("/", home)
 	router.HandleFunc("/contact", contact)
 	router.HandleFunc("/signup", usersController.RenderSignupView).
@@ -48,9 +52,12 @@ func main() {
 
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 
-	if err := http.ListenAndServe(":8080", router); err != nil {
+	err := http.ListenAndServe(":8080", router)
+	if err != nil {
 		log.Fatal(err)
-		return
 	}
-	fmt.Println("Server started!")
+}
+
+func staticFilesHandler() http.Handler {
+	return http.StripPrefix("/static/", http.FileServer(http.Dir("static/")))
 }
