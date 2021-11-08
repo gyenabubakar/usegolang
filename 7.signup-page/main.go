@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"signup_page/controllers"
 	"signup_page/views"
@@ -47,6 +48,9 @@ func main() {
 
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 
+	if err := http.ListenAndServe(":8080", router); err != nil {
+		log.Fatal(err)
+		return
+	}
 	fmt.Println("Server started!")
-	_ = http.ListenAndServe(":8080", router)
 }
