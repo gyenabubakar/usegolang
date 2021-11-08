@@ -17,8 +17,12 @@ func (u *Users) RenderSignupView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Users) HandlerUserCreation(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	_, _ = fmt.Fprint(w, "<p>User created successfully!</p>")
+	//w.Header().Set("Content-Type", "text/html")
+	if err := r.ParseForm(); err != nil {
+		panic(err)
+	}
+
+	_, _ = fmt.Fprintln(w, r.PostForm)
 }
 
 type Users struct {
