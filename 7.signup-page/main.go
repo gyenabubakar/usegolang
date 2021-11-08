@@ -1,10 +1,10 @@
 package main
 
 import (
-	"first-views/controllers"
-	"first-views/views"
 	"fmt"
 	"net/http"
+	"signup_page/controllers"
+	"signup_page/views"
 
 	"github.com/gorilla/mux"
 )

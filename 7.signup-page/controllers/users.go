@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"first-views/views"
 	"fmt"
 	"net/http"
+	"signup_page/views"
 )
 
 func UsersController() *Users {

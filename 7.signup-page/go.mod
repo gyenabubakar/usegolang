@@ -1,4 +1,4 @@
-module first-views
+module signup_page
 
 go 1.17
 
