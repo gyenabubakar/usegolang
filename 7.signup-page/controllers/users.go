@@ -8,15 +8,15 @@ import (
 
 func UsersController() *Users {
 	return &Users{
-		CreateUserView: views.NewView("bootstrap", "views/users/signup.gohtml"),
+		SignupView: views.NewView("bootstrap", "users/signup"),
 	}
 }
 
 func (u *Users) RenderSignupView(w http.ResponseWriter, r *http.Request) {
-	u.CreateUserView.Render(w, nil, nil)
+	u.SignupView.Render(w, nil, nil)
 }
 
-func (u *Users) HandlerUserCreation(w http.ResponseWriter, r *http.Request) {
+func (u *Users) HandleUserCreation(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Set("Content-Type", "text/html")
 
 	var form SignupForm
@@ -34,5 +34,5 @@ type SignupForm struct {
 }
 
 type Users struct {
-	CreateUserView *views.View
+	SignupView *views.View
 }

@@ -38,7 +38,7 @@ func main() {
 	// /signup controllers
 	router.HandleFunc("/signup", usersController.RenderSignupView).
 		Methods("GET")
-	router.HandleFunc("/signup", usersController.HandlerUserCreation).
+	router.HandleFunc("/signup", usersController.HandleUserCreation).
 		Methods("POST")
 
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)

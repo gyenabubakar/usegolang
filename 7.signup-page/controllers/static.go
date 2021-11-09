@@ -4,8 +4,8 @@ import "signup_page/views"
 
 func StaticController() *Static {
 	return &Static{
-		Home: views.NewView("bootstrap", "views/static/index.gohtml"),
-		Contact: views.NewView("bootstrap", "views/static/contact.gohtml"),
+		Home: views.NewView("bootstrap", "static/index"),
+		Contact: views.NewView("bootstrap", "static/contact"),
 	}
 }
 
