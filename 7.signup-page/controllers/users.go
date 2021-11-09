@@ -18,11 +18,19 @@ func (u *Users) RenderSignupView(w http.ResponseWriter, r *http.Request) {
 
 func (u *Users) HandlerUserCreation(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Set("Content-Type", "text/html")
-	if err := r.ParseForm(); err != nil {
+
+	var form SignupForm
+	if err := ParseForm(r, &form); err != nil {
 		panic(err)
 	}
+	_, _ = fmt.Fprintln(w, form)
+}
 
-	_, _ = fmt.Fprintln(w, r.PostForm)
+
+
+type SignupForm struct {
+	Email    string `schema:"email"`
+	Password string `schema:"password"`
 }
 
 type Users struct {
