@@ -35,6 +35,12 @@ func (v *View) Render(w http.ResponseWriter, d interface{}, fn func(error)) {
 	}
 }
 
+func (v *View) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
+	v.Render(w, nil, func(err error) {
+		panic(err)
+	})
+}
+
 type View struct {
 	Template *template.Template
 	Layout   string

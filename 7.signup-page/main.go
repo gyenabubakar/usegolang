@@ -2,27 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"signup_page/controllers"
-	"signup_page/views"
-
-	"github.com/gorilla/mux"
 )
-
-var (
-	homeView    *views.View
-	contactView *views.View
-)
-
-func home(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	homeView.Render(w, nil, nil)
-}
-
-func contact(w http.ResponseWriter, _ *http.Request) {
-	contactView.Render(w, nil, nil)
-}
 
 func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
@@ -36,10 +20,8 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	homeView = views.NewView("bootstrap", "views/index.gohtml")
-	contactView = views.NewView("bootstrap", "views/contact.gohtml")
-
 	usersController := controllers.UsersController()
+	staticController := controllers.StaticController()
 
 	router := mux.NewRouter()
 
@@ -48,8 +30,9 @@ func main() {
 		Handler(staticFilesHandler()).
 		Methods("GET")
 
-	router.HandleFunc("/", home)
-	router.HandleFunc("/contact", contact).
+	router.Handle("/", staticController.Home).
+		Methods("GET")
+	router.Handle("/contact", staticController.Contact).
 		Methods("GET")
 
 	// /signup controllers
