@@ -13,9 +13,8 @@ const (
 )
 
 func NewView(layout string, files ...string) *View {
-	for i := 0; i < len(files); i++ {
-		f := files[i]
-		files[i] = Dir + f + ComponentsExt
+	for i, f := range files {
+		files[i] = attachFullPathParts(f)
 	}
 	files = append(files, getComponents()...)
 
@@ -58,4 +57,8 @@ func getComponents() []string {
 		panic(err)
 	}
 	return files
+}
+
+func attachFullPathParts(sp string) string {
+	return Dir + sp + ComponentsExt
 }
