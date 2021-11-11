@@ -8,32 +8,18 @@ import (
 	"os"
 )
 
-var (
-	dbHost     string
-	dbHostPort string
-	dbUser     string
-	dbPassword string
-	dbName     string
-)
+var dbURL string
 
 func init() {
 	if err := godotenv.Load(); err != nil {
 		panic(err)
 		return
 	}
-	dbHost = os.Getenv("DB_HOST")
-	dbHostPort = os.Getenv("DB_HOST_PORT")
-	dbUser = os.Getenv("DB_USER")
-	dbPassword = os.Getenv("DB_PASSWORD")
-	dbName = os.Getenv("DB_NAME")
+	dbURL = os.Getenv("DB_URL")
 }
 
 func main() {
-	psqlInfo := fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disabled",
-		dbHost, dbHostPort, dbUser, dbPassword, dbName,
-	)
-	db, err := sql.Open("postgres", psqlInfo)
+	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		panic(err)
 	}
