@@ -1,8 +1,8 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
-	//"database/sql"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"os"
@@ -33,5 +33,14 @@ func main() {
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disabled",
 		dbHost, dbHostPort, dbUser, dbPassword, dbName,
 	)
-	fmt.Println(psqlInfo)
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Connection to DB established!")
+
+	if err := db.Close(); err != nil {
+		panic(err)
+	}
 }
