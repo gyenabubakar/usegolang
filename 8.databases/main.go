@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"os"
@@ -23,13 +22,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer closeDB(db)
 
-	if err := db.Ping(); err != nil {
-		panic(err)
-	}
 
-	fmt.Println("Connection to DB established!")
+}
 
+func closeDB(db *sql.DB)  {
 	if err := db.Close(); err != nil {
 		panic(err)
 	}
