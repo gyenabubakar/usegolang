@@ -24,6 +24,10 @@ func main() {
 		panic(err)
 	}
 
+	if err := db.Ping(); err != nil {
+		panic(err)
+	}
+
 	fmt.Println("Connection to DB established!")
 
 	if err := db.Close(); err != nil {
