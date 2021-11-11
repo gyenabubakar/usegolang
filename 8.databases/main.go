@@ -25,31 +25,40 @@ func main() {
 	}
 	defer closeDB(db)
 
-	var id int
-	var name string
-	var email string
+	var users []User
 
-	err = db.QueryRow(`
-		SELECT id, name, email FROM users WHERE id=$1`,
-		5,
-	).Scan(&id, &name, &email)
+	rows, err := db.Query(`SELECT id, name, email FROM users`)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			fmt.Println("No records found.")
-		} else {
-			panic(err)
-		}
+		panic(err)
 	}
 
-	fmt.Printf(
-		"id: %d\t|\tname: %s\t|\temail:%s\n",
-		id, name, email,
-	)
+	for rows.Next() {
+		var user User
+		if err = rows.Scan(&user.ID, &user.Name, &user.Email); err != nil {
+			panic(err)
+		}
+		users = append(users, user)
+	}
+
+	if rowErr := rows.Err(); rowErr != nil {
+		panic(rowErr)
+	}
+
+	fmt.Println(users)
 }
 
-//type User struct {
-//
-//}
+type User struct {
+	ID    int
+	Name  string
+	Email string
+}
+
+func (u User) String() string {
+	return fmt.Sprintf(
+		"(id:%d, name:%s, email:%s)\n",
+		u.ID, u.Name, u.Email,
+	)
+}
 
 func closeDB(db *sql.DB) {
 	if err := db.Close(); err != nil {
