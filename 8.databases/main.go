@@ -26,17 +26,25 @@ func main() {
 	defer closeDB(db)
 
 	var id int
+	var name string
+	var email string
+
 	err = db.QueryRow(`
-		INSERT INTO users(name, email)
-		VALUES($1,$2)
-		RETURNING id`,
-		"Felix", "felix@office.org",
-	).Scan(&id)
+		SELECT id, name, email FROM users WHERE id=$1`,
+		5,
+	).Scan(&id, &name, &email)
 	if err != nil {
-		panic(err)
+		if err == sql.ErrNoRows {
+			fmt.Println("No records found.")
+		} else {
+			panic(err)
+		}
 	}
 
-	fmt.Println("ID is...", id)
+	fmt.Printf(
+		"id: %d\t|\tname: %s\t|\temail:%s\n",
+		id, name, email,
+	)
 }
 
 //type User struct {
