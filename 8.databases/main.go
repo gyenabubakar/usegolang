@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"os"
@@ -24,14 +25,23 @@ func main() {
 	}
 	defer closeDB(db)
 
-	_, err = db.Exec(
-		`INSERT INTO users(name, email) VALUES($1,$2)`,
-		"Gyen", "gyen@dev.co",
-	)
+	var id int
+	err = db.QueryRow(`
+		INSERT INTO users(name, email)
+		VALUES($1,$2)
+		RETURNING id`,
+		"Felix", "felix@office.org",
+	).Scan(&id)
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println("ID is...", id)
 }
+
+//type User struct {
+//
+//}
 
 func closeDB(db *sql.DB) {
 	if err := db.Close(); err != nil {
