@@ -8,23 +8,31 @@ import (
 
 func UsersController() *Users {
 	return &Users{
-		CreateUserView: views.NewView("bootstrap", "views/users/signup.gohtml"),
+		SignupView: views.NewView("bootstrap", "users/signup"),
 	}
 }
 
 func (u *Users) RenderSignupView(w http.ResponseWriter, r *http.Request) {
-	u.CreateUserView.Render(w, nil, nil)
+	u.SignupView.Render(w, nil, nil)
 }
 
-func (u *Users) HandlerUserCreation(w http.ResponseWriter, r *http.Request) {
+func (u *Users) HandleUserCreation(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Set("Content-Type", "text/html")
-	if err := r.ParseForm(); err != nil {
+
+	var form SignupForm
+	if err := ParseForm(r, &form); err != nil {
 		panic(err)
 	}
+	_, _ = fmt.Fprintln(w, form)
+}
 
-	_, _ = fmt.Fprintln(w, r.PostForm)
+
+
+type SignupForm struct {
+	Email    string `schema:"email"`
+	Password string `schema:"password"`
 }
 
 type Users struct {
-	CreateUserView *views.View
+	SignupView *views.View
 }

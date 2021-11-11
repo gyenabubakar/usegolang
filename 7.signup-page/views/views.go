@@ -7,12 +7,17 @@ import (
 )
 
 const (
-	ComponentsDir = "views/components/"
+	Dir           = "views/"
+	ComponentsDir = Dir + "components/"
 	ComponentsExt = ".gohtml"
 )
 
 func NewView(layout string, files ...string) *View {
+	for i, f := range files {
+		files[i] = attachFullPathParts(f)
+	}
 	files = append(files, getComponents()...)
+
 	t, err := template.ParseFiles(files...)
 	if err != nil {
 		panic(err)
@@ -35,6 +40,12 @@ func (v *View) Render(w http.ResponseWriter, d interface{}, fn func(error)) {
 	}
 }
 
+func (v *View) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
+	v.Render(w, nil, func(err error) {
+		panic(err)
+	})
+}
+
 type View struct {
 	Template *template.Template
 	Layout   string
@@ -46,4 +57,8 @@ func getComponents() []string {
 		panic(err)
 	}
 	return files
+}
+
+func attachFullPathParts(sp string) string {
+	return Dir + sp + ComponentsExt
 }
