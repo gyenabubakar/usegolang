@@ -24,10 +24,16 @@ func main() {
 	}
 	defer closeDB(db)
 
-
+	_, err = db.Exec(
+		`INSERT INTO users(name, email) VALUES($1,$2)`,
+		"Gyen", "gyen@dev.co",
+	)
+	if err != nil {
+		panic(err)
+	}
 }
 
-func closeDB(db *sql.DB)  {
+func closeDB(db *sql.DB) {
 	if err := db.Close(); err != nil {
 		panic(err)
 	}
