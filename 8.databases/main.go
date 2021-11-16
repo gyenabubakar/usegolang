@@ -23,8 +23,16 @@ func init() {
 
 type User struct {
 	gorm.Model
-	Name  string `gorm:"size:255"`
-	Email string `gorm:"not null;uniqueIndex"`
+	Name   string `gorm:"size:255"`
+	Email  string `gorm:"not null;uniqueIndex"`
+	Orders []Order
+}
+
+type Order struct {
+	gorm.Model
+	UserID      int  `gorm:"not null"`
+	Amount      uint `gorm:"not null"`
+	Description *string
 }
 
 func main() {
@@ -51,30 +59,49 @@ func main() {
 		}
 	}()
 
-	if err := db.AutoMigrate(User{}); err != nil {
+	if err := db.AutoMigrate(User{}, Order{}); err != nil {
 		panic(err)
 	}
 
-	//var user User
 	var users []User
 
-	db.Find(&users)
+	if err := db.Preload("Orders").Find(&users).Error; err != nil {
+		switch err {
+		case gorm.ErrRecordNotFound:
+			fmt.Println("User not found!")
+			os.Exit(1)
+		default:
+			panic(err)
+		}
+	}
 
 	fmt.Println(users)
 
 	//db.Migrator().DropTable(User{})
 }
 
-//var users = []User{
-//	{Name: "Sena", Email: "sena@test.io"},
-//	{Name: "Felix", Email: "felix@test.io"},
-//	{Name: "James", Email: "james@test.io"},
-//	{Name: "Emma", Email: "emma@test.io"},
-//	{Name: "Biney", Email: "biney@test.io"},
-//	{Name: "Ben", Email: "ben@test.io"},
-//	{Name: "Percy", Email: "percy@test.io"},
-//}
+var orders = []Order{
+	{Amount: 100, Description: boxString("USB-C Charger"), UserID: 3},
+	{Amount: 200, Description: boxString("Web Cam"), UserID: 7},
+	{Amount: 300, Description: boxString("USB-C Charger"), UserID: 5},
+	{Amount: 10, Description: boxString("Apple Sticker"), UserID: 11},
+	{Amount: 120, Description: boxString("Airpods Refurbished"), UserID: 6},
+	{Amount: 50, Description: boxString("AAA Battery 1 pack"), UserID: 7},
+	{Amount: 99, Description: boxString("Note 3 Book 3x"), UserID: 8},
+}
 
 func (u User) String() string {
-	return fmt.Sprintf("\n(ID: %d, Name: %s, Email: %s)\n", u.ID, u.Name, u.Email)
+	return fmt.Sprintf(
+		"\n(ID: %d, Name: %s, Email: %s, Orders: %v)\n",
+		u.ID, u.Name, u.Email, u.Orders,
+	)
+}
+func (o Order) String() string {
+	return fmt.Sprintf(
+		"(ID: %d, Amount: %d, UserID: %d, Description: %v)\n",
+		o.ID, o.Amount, o.UserID, o.Description,
+	)
+}
+func boxString(s string) *string {
+	return &s
 }
