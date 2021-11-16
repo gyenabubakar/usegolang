@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -9,7 +8,6 @@ import (
 	"gorm.io/gorm/logger"
 	"log"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -30,7 +28,6 @@ type User struct {
 }
 
 func main() {
-
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
@@ -45,39 +42,39 @@ func main() {
 		Logger: newLogger,
 	})
 	if err != nil {
-		panic("failed to connect to database")
+		panic("Failed to connect to database")
 	}
-	sqlDB, _ := db.DB()
-	if err := sqlDB.Ping(); err != nil {
-		panic(err)
-	}
+	defer func() {
+		sqlDB, _ := db.DB()
+		if err := sqlDB.Close(); err != nil {
+			panic(err)
+		}
+	}()
+
 	if err := db.AutoMigrate(User{}); err != nil {
 		panic(err)
 	}
 
-	name, email := getInfo()
-	user := User{
-		Name:  name,
-		Email: email,
-	}
-	if err := db.Create(&user).Error; err != nil {
-		fmt.Println(err)
-		return
-	}
+	//var user User
+	var users []User
 
-	fmt.Printf("%+v\n", user)
+	db.Find(&users)
+
+	fmt.Println(users)
 
 	//db.Migrator().DropTable(User{})
 }
 
-func getInfo() (name, email string) {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Your name?")
-	name, _ = reader.ReadString('\n')
-	name = strings.TrimSpace(name)
+//var users = []User{
+//	{Name: "Sena", Email: "sena@test.io"},
+//	{Name: "Felix", Email: "felix@test.io"},
+//	{Name: "James", Email: "james@test.io"},
+//	{Name: "Emma", Email: "emma@test.io"},
+//	{Name: "Biney", Email: "biney@test.io"},
+//	{Name: "Ben", Email: "ben@test.io"},
+//	{Name: "Percy", Email: "percy@test.io"},
+//}
 
-	fmt.Println("Your email?")
-	email, _ = reader.ReadString('\n')
-	email = strings.TrimSpace(email)
-	return
+func (u User) String() string {
+	return fmt.Sprintf("\n(ID: %d, Name: %s, Email: %s)\n", u.ID, u.Name, u.Email)
 }
