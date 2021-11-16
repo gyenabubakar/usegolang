@@ -25,39 +25,45 @@ func main() {
 	}
 	defer closeDB(db)
 
-	var users []User
+	var orders []Order
 
-	rows, err := db.Query(`SELECT id, name, email FROM users`)
+	rows, err := db.Query(`
+		SELECT users.id,
+				users.name,
+				users.email,
+				orders.id,
+				orders.amount,
+				orders.description
+		FROM users
+				INNER JOIN orders on users.id = orders.user_id
+	`)
 	if err != nil {
 		panic(err)
 	}
-
 	for rows.Next() {
-		var user User
-		if err = rows.Scan(&user.ID, &user.Name, &user.Email); err != nil {
+		var order Order
+		err := rows.Scan(
+			&order.UserID, &order.UserName, &order.UserEmail, &order.ID, &order.Amount, &order.Description,
+		)
+		if err != nil {
 			panic(err)
 		}
-		users = append(users, user)
+		orders = append(orders, order)
+	}
+	if rows.Err() != nil {
+		panic(rows.Err())
 	}
 
-	if rowErr := rows.Err(); rowErr != nil {
-		panic(rowErr)
-	}
-
-	fmt.Println(users)
+	fmt.Printf("%#v\n", orders)
 }
 
-type User struct {
-	ID    int
-	Name  string
-	Email string
-}
-
-func (u User) String() string {
-	return fmt.Sprintf(
-		"(id:%d, name:%s, email:%s)\n",
-		u.ID, u.Name, u.Email,
-	)
+type Order struct {
+	ID          int
+	Amount      int
+	Description string
+	UserID      int
+	UserName    string
+	UserEmail   string
 }
 
 func closeDB(db *sql.DB) {
