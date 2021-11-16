@@ -1,10 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"os"
 )
 
@@ -19,55 +19,13 @@ func init() {
 }
 
 func main() {
-	db, err := sql.Open("postgres", dbURL)
+	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 	if err != nil {
+		panic("failed to connect to database")
+	}
+	sqlDB, _ := db.DB()
+	if err := sqlDB.Ping(); err != nil {
 		panic(err)
 	}
-	defer closeDB(db)
-
-	var orders []Order
-
-	rows, err := db.Query(`
-		SELECT users.id,
-				users.name,
-				users.email,
-				orders.id,
-				orders.amount,
-				orders.description
-		FROM users
-				INNER JOIN orders on users.id = orders.user_id
-	`)
-	if err != nil {
-		panic(err)
-	}
-	for rows.Next() {
-		var order Order
-		err := rows.Scan(
-			&order.UserID, &order.UserName, &order.UserEmail, &order.ID, &order.Amount, &order.Description,
-		)
-		if err != nil {
-			panic(err)
-		}
-		orders = append(orders, order)
-	}
-	if rows.Err() != nil {
-		panic(rows.Err())
-	}
-
-	fmt.Printf("%#v\n", orders)
-}
-
-type Order struct {
-	ID          int
-	Amount      int
-	Description string
-	UserID      int
-	UserName    string
-	UserEmail   string
-}
-
-func closeDB(db *sql.DB) {
-	if err := db.Close(); err != nil {
-		panic(err)
-	}
+	fmt.Println("DB connected successfully!")
 }
