@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -18,6 +17,12 @@ func init() {
 	dbURL = os.Getenv("DB_URL")
 }
 
+type User struct {
+	gorm.Model
+	Name  string `gorm:"size:255"`
+	Email string `gorm:"unique;uniqueIndex"`
+}
+
 func main() {
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 	if err != nil {
@@ -27,5 +32,8 @@ func main() {
 	if err := sqlDB.Ping(); err != nil {
 		panic(err)
 	}
-	fmt.Println("DB connected successfully!")
+
+	if err := db.AutoMigrate(User{}); err != nil {
+		panic(err)
+	}
 }
